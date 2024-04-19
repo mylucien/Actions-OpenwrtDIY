@@ -173,6 +173,14 @@ jobs:
         name: OpenWrt_firmware_${{ env.DEVICE_NAME }}
         path: ${{ env.FIRMWARE }}
 
+    - name: Generate release tag
+      id: tag
+      run: |
+        echo "release_tag=AX18-2024_$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+        touch release.txt
+        echo "AX18-2024 firmware" >> release.txt
+        echo "status=success" >> $GITHUB_OUTPUT
+
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
       env:
