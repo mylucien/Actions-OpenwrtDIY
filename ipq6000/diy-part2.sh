@@ -11,7 +11,7 @@
 #
 
 # Modify default IP
-sed -i 's/192.168.1.1/192.168.199.1/g' package/base-files/files/bin/config_generate
+# sed -i 's/192.168.1.1/192.168.199.1/g' package/base-files/files/bin/config_generate
 
 # 修正连接数
 # sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
@@ -35,10 +35,10 @@ sed -i 's/192.168.1.1/192.168.199.1/g' package/base-files/files/bin/config_gener
 # sed -i 's/OpenWrt/OpenWrt/g' package/base-files/files/bin/config_generate
 
 # 使用原始最新版本，而不是上游package里面的
-rm -rf ./feeds/luci/applications/luci-app-openclash
-git clone --depth=1 https://github.com/vernesong/OpenClash.git ./feeds/luci/applications/luci-app-openclash
+# rm -rf ./feeds/luci/applications/luci-app-openclash
+# git clone --depth=1 https://github.com/vernesong/OpenClash.git ./feeds/luci/applications/luci-app-openclash
 
-git clone -b v5 https://github.com/sbwml/luci-app-mosdns.git package/mosdns
+# git clone -b v5 https://github.com/sbwml/luci-app-mosdns.git package/mosdns
 
 # rm -rf ./feeds/packages/net/smartdns
 # git clone --filter=blob:none --sparse https://github.com/immortalwrt/packages
@@ -71,3 +71,13 @@ git clone -b v5 https://github.com/sbwml/luci-app-mosdns.git package/mosdns
 # git clone https://github.com/jerrykuku/luci-app-vssr.git package/luci-app-vssr
 # git clone https://github.com/riverscn/openwrt-iptvhelper.git package/openwrt-iptvhelper
 # git clone -b luci https://github.com/pexcn/openwrt-chinadns-ng.git package/luci-app-chinadns-ng
+
+# 替换golang版本为1.22
+rm -rf feeds/packages/lang/golang
+git clone https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang
+
+# ttyd免登陆
+sed -i -r 's#/bin/login#/bin/login -f root#g' feeds/packages/utils/ttyd/files/ttyd.config
+
+# design修改proxy链接
+sed -i -r "s#navbar_proxy = 'openclash'#navbar_proxy = 'passwall'#g" feeds/luci/themes/luci-theme-design/luasrc/view/themes/design/header.htm
