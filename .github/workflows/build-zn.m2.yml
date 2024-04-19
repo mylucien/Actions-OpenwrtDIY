@@ -173,31 +173,17 @@ jobs:
         name: OpenWrt_firmware_${{ env.DEVICE_NAME }}
         path: ${{ env.FIRMWARE }}
 
-    - name: Upload OpenWrt Firmware to Release
-      id: release
-      uses: ncipollo/release-action@main
-      if: env.ORGANIZE_STATUS == 'success' && env.UPLOAD_RELEASE == 'true' && (!cancelled())
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag: v${{ env.FILE_DATE }}-ipq60xx
-        removeArtifacts: false
-        artifacts: ${{ env.FIRMWARE }}/*
-        allowUpdates: true
-        token: ${{ secrets.GH_TOKEN }}
-        body: |
-            ZN M2/CMIOT AX18 固件精简版, 编译时间: ${{ env.FILE_DATE }}
-            
-            Default IP: 192.168.199.1
-            Default username: root
-            Default password: password
-            
-            插件列表：
-              ├ ddns
-              ├ frpc
-              ├ mosdns
-              ├ OpenClash
-              ├ ttyd
-              └ KMS
-              
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        prerelease: true
+        body_path: release.txt
+        files: |
+         ${{ env.FIRMWARE }}/*.ubi
+         ${{ env.FIRMWARE }}/*.bin     
 
     - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@main
